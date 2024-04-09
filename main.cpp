@@ -329,5 +329,6 @@ int main()
     constexpr sss::fraction<int> B {-2, 6};
     constexpr sss::fraction<int> C {A%B};
 
-    constexpr int I {-3%(-2)};
+    constexpr int N {C.get_numer()};
+    constexpr unsigned int D {C.get_denom()};
 }

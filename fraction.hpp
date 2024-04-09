@@ -5,14 +5,16 @@
 #include <compare>
 #include <numeric>
 #include <optional>
+#include <concepts>
 
 namespace sss
 {
     template<typename T>
+    concept nonbool_integral = std::integral<T> && (!std::same_as<T, bool>);
+
+    template<typename T> requires nonbool_integral<T>
     class fraction
     {
-        static_assert(std::is_integral<T>::value, "T must be an integer.");
-
         private:
             T numer;
             std::make_unsigned_t<T> denom;
@@ -40,17 +42,17 @@ namespace sss
             [[nodiscard]] constexpr T round(void) const noexcept;
             [[nodiscard]] constexpr T trunc(void) const noexcept;
             [[nodiscard]] constexpr fraction fract(void) const noexcept;
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr fraction pow(const I& rhs) const noexcept;
 
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr explicit operator fraction<I>(void) const noexcept;
             /*template<typename I, std::enable_if_t<std::is_integral<I>::value && (!std::is_signed<T>::value || std::is_signed<I>::value) && (sizeof(I) > sizeof(T)), bool> = true>
             [[nodiscard]] constexpr operator Fraction<I>(void) const noexcept;*/
             [[nodiscard]] constexpr explicit operator T(void) const noexcept;
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr explicit operator I(void) const noexcept;
-            template<typename F, std::enable_if_t<std::is_floating_point<F>::value, bool> = true>
+            template<typename F> requires std::floating_point<F>
             [[nodiscard]] constexpr operator F(void) const noexcept;
             [[nodiscard]] constexpr operator std::string(void) const noexcept;
             [[nodiscard]] constexpr fraction operator+(const fraction rhs) const noexcept;
@@ -68,15 +70,15 @@ namespace sss
             [[nodiscard]] constexpr fraction operator%(const T& rhs) const noexcept;
             [[nodiscard]] constexpr fraction operator*(const T& rhs) const noexcept;
             [[nodiscard]] constexpr fraction operator/(const T& rhs) const noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr fraction<U> operator+(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr fraction<U> operator-(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr fraction<U> operator%(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr fraction<U> operator*(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr fraction<U> operator/(const U& lhs, const fraction<U>& rhs) noexcept;
             constexpr fraction& operator+=(const T& rhs) noexcept;
             constexpr fraction& operator-=(const T& rhs) noexcept;
@@ -86,36 +88,36 @@ namespace sss
             [[nodiscard]] constexpr fraction<std::make_signed_t<T>> operator-(void) const noexcept;
             [[nodiscard]] constexpr std::partial_ordering operator<=>(const fraction& rhs) const noexcept;
             [[nodiscard]] constexpr std::partial_ordering operator<=>(const T& rhs) const noexcept;
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr std::partial_ordering operator<=>(const I& rhs) const noexcept;
             [[nodiscard]] constexpr std::partial_ordering operator<=>(std::nullptr_t) const noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr std::partial_ordering operator<=>(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U, typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+            template<typename U, typename I> requires nonbool_integral<U> && nonbool_integral<I>
             friend constexpr std::partial_ordering operator<=>(const I& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr std::partial_ordering operator<=>(std::nullptr_t, const fraction<U>& x) noexcept;
             [[nodiscard]] constexpr bool operator==(const fraction& rhs) const noexcept;
             [[nodiscard]] constexpr bool operator==(const T& rhs) const noexcept;
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr bool operator==(const I& rhs) const noexcept;
             [[nodiscard]] constexpr bool operator==(std::nullptr_t) const noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr bool operator==(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U, typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+            template<typename U, typename I> requires nonbool_integral<U> && nonbool_integral<I>
             friend constexpr bool operator==(const I& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr bool operator==(std::nullptr_t, const fraction<U>& rhs) noexcept;
             [[nodiscard]] constexpr bool operator!=(const fraction& rhs) const noexcept;
-            template<typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+            template<typename I> requires nonbool_integral<I>
             [[nodiscard]] constexpr bool operator!=(const I& rhs) const noexcept;
             [[nodiscard]] constexpr bool operator!=(const T& rhs) const noexcept;
             [[nodiscard]] constexpr bool operator!=(std::nullptr_t) const noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr bool operator!=(const U& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U, typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+            template<typename U, typename I> requires nonbool_integral<U> && nonbool_integral<I>
             friend constexpr bool operator!=(const I& lhs, const fraction<U>& rhs) noexcept;
-            template<typename U>
+            template<typename U> requires nonbool_integral<U>
             friend constexpr bool operator!=(std::nullptr_t, const fraction<U>& rhs) noexcept;
 
         private:
@@ -137,7 +139,7 @@ namespace sss
     };
 }
 
-template<typename T>
+template<typename T> requires sss::nonbool_integral<T>
 class std::numeric_limits<sss::fraction<T>>
 {
     public:
@@ -161,8 +163,8 @@ class std::numeric_limits<sss::fraction<T>>
         static constexpr int max_digits10              = std::numeric_limits<T>::max_digits10;
         static constexpr int max_exponent              = std::numeric_limits<T>::max_exponent;
         static constexpr int max_exponent10            = std::numeric_limits<T>::max_exponent10;
-        static constexpr int min_exponent              = -std::numeric_limits<T>::max_exponent;
-        static constexpr int min_exponent10            = -std::numeric_limits<T>::max_exponent10;
+        static constexpr int min_exponent              = -std::numeric_limits<std::make_unsigned_t<T>>::max_exponent;
+        static constexpr int min_exponent10            = -std::numeric_limits<std::make_unsigned_t<T>>::max_exponent10;
         static constexpr int radix                     = 2;
         
         [[nodiscard]] static constexpr sss::fraction<T> (min)() noexcept

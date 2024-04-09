@@ -7,63 +7,63 @@
 
 namespace sss
 {
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>::fraction(T numer, std::make_unsigned_t<T> denom) noexcept:
         numer{numer},
         denom{denom}
     {
         this->reduce();
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>::fraction(T value) noexcept:
         fraction{value, 1}
     {
         
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>::fraction(void) noexcept:
         fraction{0, 1}
     {
 
     }
 
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::get_numer(void) const noexcept
     {
         return this->numer;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::make_unsigned_t<T> fraction<T>::get_denom(void) const noexcept
     {
         return this->denom;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::is_nan() const noexcept
     {
         return this->numer == 0 && this->denom == 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::is_infinite() const noexcept
     {
         return this->numer != 0 && this->denom == 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::is_finite() const noexcept
     {
         return this->denom != 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::is_zero() const noexcept
     {
         return this->numer == 0 && this->denom != 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::is_one() const noexcept
     {
         return this->numer > 0 && static_cast<std::make_unsigned_t<T>>(this->numer) == this->denom;
     }
 
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<std::make_unsigned_t<T>> fraction<T>::abs(void) const noexcept
     {
         if(this->numer < 0)
@@ -76,7 +76,7 @@ namespace sss
         }
         return {static_cast<std::make_unsigned_t<T>>(this->numer), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::signum(void) const noexcept
     {
         if(this->numer < 0)
@@ -89,12 +89,12 @@ namespace sss
         }
         return 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::copysign(const fraction& rhs) const noexcept
     {
         return this->copysign(rhs.numer);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::copysign(const T& rhs) const noexcept
     {
         if(rhs == 0)
@@ -107,7 +107,7 @@ namespace sss
         }
         return *this;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::recip(void) const noexcept
     {
         if(this->numer < 0)
@@ -119,28 +119,28 @@ namespace sss
         }
         return {static_cast<T>(this->denom), static_cast<std::make_unsigned_t<T>>(this->numer)};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::floor(void) const noexcept
     {
         T x = this->numer;
         T y = static_cast<T>(this->denom);
         return x/y - (x % y != 0) * ((x < 0) ^ (y < 0));
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::ceil(void) const noexcept
     {
         T x = this->numer;
         T y = static_cast<T>(this->denom);
         return x/y + (x % y != 0) * !((x > 0) ^ (y > 0));
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::trunc(void) const noexcept
     {
         T x = this->numer;
         T y = static_cast<T>(this->denom);
         return x/y;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr T fraction<T>::round(void) const noexcept
     {
         T x = this->numer;
@@ -150,7 +150,7 @@ namespace sss
         T h = y/2;
         return r + (!(x < 0) & (m > h)) - ((x < 0) & ((m + h) < 0));
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::fract(void) const noexcept
     {
         if(this->denom > static_cast<std::make_unsigned_t<T>>(std::numeric_limits<T>::max()))
@@ -159,8 +159,8 @@ namespace sss
         }
         return {static_cast<T>(this->numer % static_cast<T>(this->denom)), this->denom};
     }
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr fraction<T> fraction<T>::pow(const I& rhs) const noexcept
     {
         I n {rhs};
@@ -187,8 +187,8 @@ namespace sss
         }
     }
 
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr fraction<T>::operator fraction<I>(void) const noexcept
     {
         if(this->numer < 0 && !std::is_signed<I>::value)
@@ -223,24 +223,24 @@ namespace sss
             };
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>::operator T(void) const noexcept
     {
         return this->trunc();
     }
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr fraction<T>::operator I(void) const noexcept
     {
         return static_cast<I>(this->trunc());
     }
-    template<typename T>
-    template<typename F, std::enable_if_t<std::is_floating_point<F>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename F> requires std::floating_point<F>
     constexpr fraction<T>::operator F(void) const noexcept
     {
         return static_cast<F>(this->numer)/static_cast<F>(this->denom);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>::operator std::string(void) const noexcept
     {
         if(this->is_zero() || this->abs().is_one())
@@ -250,7 +250,7 @@ namespace sss
         return std::format("{:d}/{:d}", this->numer, this->denom);
     }
 
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator+(const fraction<T> rhs) const noexcept
     {
         fraction<T> a {*this};
@@ -285,7 +285,7 @@ namespace sss
             }
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator-(const fraction<T> rhs) const noexcept
     {
         fraction<T> a {*this};
@@ -319,7 +319,7 @@ namespace sss
             }
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator%(const fraction<T> rhs) const noexcept
     {
         fraction<T> a {*this};
@@ -353,7 +353,7 @@ namespace sss
             }
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator*(const fraction<T> rhs) const noexcept
     {
         fraction<T> a {*this};
@@ -387,7 +387,7 @@ namespace sss
             }
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator/(const fraction<T> rhs) const noexcept
     {
         fraction<T> a {*this};
@@ -421,32 +421,32 @@ namespace sss
             }
         }
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator+=(const fraction<T> rhs) noexcept
     {
         return *this = *this + rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator-=(const fraction<T> rhs) noexcept
     {
         return *this = *this - rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator%=(const fraction<T> rhs) noexcept
     {
         return *this = *this % rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator*=(const fraction<T> rhs) noexcept
     {
         return *this = *this * rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator/=(const fraction<T> rhs) noexcept
     {
         return *this = *this / rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator+(const T& rhs) const noexcept
     {
         std::optional<fraction<T>> y {this->checked_add(rhs)};
@@ -456,7 +456,7 @@ namespace sss
         }
         return *this + fraction{rhs};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator-(const T& rhs) const noexcept
     {
         std::optional<fraction<T>> y {this->checked_sub(rhs)};
@@ -466,7 +466,7 @@ namespace sss
         }
         return *this - fraction{rhs};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator%(const T& rhs) const noexcept
     {
         std::optional<fraction<T>> y {this->checked_rem(rhs)};
@@ -476,7 +476,7 @@ namespace sss
         }
         return *this % fraction{rhs};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator*(const T& rhs) const noexcept
     {
         std::optional<fraction<T>> y {this->checked_mul(rhs)};
@@ -486,7 +486,7 @@ namespace sss
         }
         return *this * fraction{rhs};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T> fraction<T>::operator/(const T& rhs) const noexcept
     {
         std::optional<fraction<T>> y {this->checked_div(rhs)};
@@ -496,12 +496,12 @@ namespace sss
         }
         return *this / fraction{rhs};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr fraction<T> operator+(const T& lhs, const fraction<T>& rhs) noexcept
     {
         return rhs + lhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr fraction<T> operator-(const T& lhs, const fraction<T>& rhs) noexcept
     {
         std::optional<fraction<T>> y {rhs.checked_lsub(lhs)};
@@ -511,7 +511,7 @@ namespace sss
         }
         return fraction{lhs} - rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr fraction<T> operator%(const T& lhs, const fraction<T>& rhs) noexcept
     {
         std::optional<fraction<T>> y {rhs.checked_lrem(lhs)};
@@ -521,12 +521,12 @@ namespace sss
         }
         return fraction{lhs} % rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr fraction<T> operator*(const T& lhs, const fraction<T>& rhs) noexcept
     {
         return rhs*lhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr fraction<T> operator/(const T& lhs, const fraction<T>& rhs) noexcept
     {
         std::optional<fraction<T>> y {rhs.checked_ldiv(lhs)};
@@ -536,32 +536,32 @@ namespace sss
         }
         return fraction{lhs} / rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator+=(const T& rhs) noexcept
     {
         return *this = *this + rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator-=(const T& rhs) noexcept
     {
         return *this = *this - rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator%=(const T& rhs) noexcept
     {
         return *this = *this % rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator*=(const T& rhs) noexcept
     {
         return *this = *this*rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<T>& fraction<T>::operator/=(const T& rhs) noexcept
     {
         return *this = *this/rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr fraction<std::make_signed_t<T>> fraction<T>::operator-(void) const noexcept
     {
         if(this->numer > static_cast<T>(std::numeric_limits<std::make_signed_t<T>>::max()))
@@ -578,7 +578,7 @@ namespace sss
             this->denom
         };
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::partial_ordering fraction<T>::operator<=>(const fraction<T>& rhs) const noexcept
     {
         if(this->is_nan() || rhs.is_nan())
@@ -589,7 +589,7 @@ namespace sss
             this->numer*static_cast<T>(rhs.denom) <=> rhs.numer*static_cast<T>(this->denom)
         );
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::partial_ordering fraction<T>::operator<=>(const T& rhs) const noexcept
     {
         if(this->is_nan())
@@ -600,8 +600,8 @@ namespace sss
             this->numer <=> rhs*static_cast<T>(this->denom)
         );
     }
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr std::partial_ordering fraction<T>::operator<=>(const I& rhs) const noexcept
     {
         if(this->is_nan())
@@ -622,7 +622,7 @@ namespace sss
         }
         return *this <=> static_cast<T>(rhs);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::partial_ordering fraction<T>::operator<=>(std::nullptr_t) const noexcept
     {
         if(this->is_nan())
@@ -633,7 +633,7 @@ namespace sss
             this->numer <=> 0
         );
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr std::partial_ordering operator<=>(const T& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -644,7 +644,7 @@ namespace sss
             lhs*static_cast<T>(rhs.denom) <=> rhs.numer
         );
     }
-    template<typename T, typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+    template<typename T, typename I> requires nonbool_integral<T> && nonbool_integral<I>
     [[nodiscard]] constexpr std::partial_ordering operator<=>(const I& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -665,7 +665,7 @@ namespace sss
         }
         return static_cast<T>(lhs) <=> rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr std::partial_ordering operator<=>(std::nullptr_t, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -676,7 +676,7 @@ namespace sss
             0 <=> rhs.numer
         );
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator==(const fraction<T>& rhs) const noexcept
     {
         if(this->is_nan() || rhs.is_nan())
@@ -685,7 +685,7 @@ namespace sss
         }
         return this->numer*static_cast<T>(rhs.denom) == rhs.numer*static_cast<T>(this->denom);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator==(const T& rhs) const noexcept
     {
         if(this->is_nan())
@@ -694,8 +694,8 @@ namespace sss
         }
         return this->numer == rhs*static_cast<T>(this->denom);
     }
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr bool fraction<T>::operator==(const I& rhs) const noexcept
     {
         if(this->is_nan())
@@ -712,7 +712,7 @@ namespace sss
         }
         return *this == static_cast<T>(rhs);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator==(std::nullptr_t) const noexcept
     {
         if(!this->is_finite())
@@ -721,7 +721,7 @@ namespace sss
         }
         return this->numer == 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr bool operator==(const T& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -730,7 +730,7 @@ namespace sss
         }
         return lhs*static_cast<T>(rhs.denom) == rhs.numer;
     }
-    template<typename T, typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+    template<typename T, typename I> requires nonbool_integral<T> && nonbool_integral<I>
     [[nodiscard]] constexpr bool operator==(const I& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -747,7 +747,7 @@ namespace sss
         }
         return static_cast<T>(lhs) == rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr bool operator==(std::nullptr_t, const fraction<T>& rhs) noexcept
     {
         if(!rhs.is_finite())
@@ -756,7 +756,7 @@ namespace sss
         }
         return 0 == rhs.numer;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator!=(const fraction<T>& rhs) const noexcept
     {
         if(this->is_nan() || rhs.is_nan())
@@ -765,7 +765,7 @@ namespace sss
         }
         return this->numer*static_cast<T>(rhs.denom) != rhs.numer*static_cast<T>(this->denom);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator!=(const T& rhs) const noexcept
     {
         if(this->is_nan())
@@ -774,8 +774,8 @@ namespace sss
         }
         return this->numer != rhs*static_cast<T>(this->denom);
     }
-    template<typename T>
-    template<typename I, std::enable_if_t<std::is_integral<I>::value, bool>>
+    template<typename T> requires nonbool_integral<T>
+    template<typename I> requires nonbool_integral<I>
     constexpr bool fraction<T>::operator!=(const I& rhs) const noexcept
     {
         if(this->is_nan())
@@ -792,7 +792,7 @@ namespace sss
         }
         return *this != static_cast<T>(rhs);
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr bool fraction<T>::operator!=(std::nullptr_t) const noexcept
     {
         if(!this->is_finite())
@@ -801,7 +801,7 @@ namespace sss
         }
         return this->numer != 0;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr bool operator!=(const T& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -810,7 +810,7 @@ namespace sss
         }
         return lhs*static_cast<T>(rhs.denom) != rhs.numer;
     }
-    template<typename T, typename I, std::enable_if_t<std::is_integral<I>::value, bool> = true>
+    template<typename T, typename I> requires nonbool_integral<T> && nonbool_integral<I>
     [[nodiscard]] constexpr bool operator!=(const I& lhs, const fraction<T>& rhs) noexcept
     {
         if(rhs.is_nan())
@@ -827,7 +827,7 @@ namespace sss
         }
         return static_cast<T>(lhs) != rhs;
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     [[nodiscard]] constexpr bool operator!=(std::nullptr_t, const fraction<T>& rhs) noexcept
     {
         if(!rhs.is_finite())
@@ -836,7 +836,7 @@ namespace sss
         }
         return 0 != rhs.numer;
     }
-    template<typename T, typename O>
+    template<typename T, typename O> requires nonbool_integral<T>
     constexpr O&& operator<<(O&& o, const fraction<T>& x) noexcept
     {
         return o << static_cast<std::string>(x);
@@ -844,7 +844,7 @@ namespace sss
 
     // Private ---------------------------------------------------------------------------------------------------------
 
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr void fraction<T>::reduce(void) noexcept
     {
         std::make_unsigned_t<T> gcd {static_cast<std::make_unsigned_t<T>>(std::gcd<T, std::make_unsigned_t<T>>(
@@ -858,7 +858,7 @@ namespace sss
         }
     }
 
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_add(const fraction<T>& rhs) const noexcept
     {
         if(rhs.is_zero() || this->is_nan())
@@ -923,7 +923,7 @@ namespace sss
         }
         return fraction{numer.value(), lcm};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_add(const T& rhs) const noexcept
     {
         if(rhs == 0 || this->is_nan())
@@ -950,7 +950,7 @@ namespace sss
         }
         return fraction{numer.value(), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_sub(const fraction<T>& rhs) const noexcept
     {
         if(rhs.is_zero() || this->is_nan())
@@ -1016,7 +1016,7 @@ namespace sss
         }
         return fraction{numer.value(), lcm};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_sub(const T& rhs) const noexcept
     {
         if(rhs == 0 || this->is_nan())
@@ -1039,7 +1039,7 @@ namespace sss
         }
         return fraction{numer.value(), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_lsub(const T& lhs) const noexcept
     {
         if(this->is_nan())
@@ -1066,7 +1066,7 @@ namespace sss
         }
         return fraction{numer.value(), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_rem(const fraction<T>& rhs) const noexcept
     {
         if(rhs.numer == 0 || this->is_nan())
@@ -1118,7 +1118,7 @@ namespace sss
         }
         return fraction{numer.value(), lcm};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_rem(const T& rhs) const noexcept
     {
         if(rhs == 0 || this->is_nan())
@@ -1141,7 +1141,7 @@ namespace sss
         }
         return fraction{numer.value(), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_lrem(const T& lhs) const noexcept
     {
         if(this->numer == 0)
@@ -1164,7 +1164,7 @@ namespace sss
         }
         return fraction{numer.value(), this->denom};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_mul(const fraction<T>& rhs) const noexcept
     {
         std::make_unsigned_t<T> gcd_ad {std::gcd<std::make_unsigned_t<T>, std::make_unsigned_t<T>>(
@@ -1211,7 +1211,7 @@ namespace sss
         }
         return fraction{numer.value(), denom.value()};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_mul(const T& rhs) const noexcept
     {
         std::make_unsigned_t<T> gcd {std::gcd<std::make_unsigned_t<T>, std::make_unsigned_t<T>>(
@@ -1229,7 +1229,7 @@ namespace sss
         }
         return fraction{numer.value(), static_cast<std::make_unsigned_t<T>>(this->denom/gcd)};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_div(const fraction<T>& rhs) const noexcept
     {
         std::make_unsigned_t<T> gcd_ac {std::gcd<std::make_unsigned_t<T>, std::make_unsigned_t<T>>(
@@ -1296,7 +1296,7 @@ namespace sss
         }
         return fraction{numer.value(), denom.value()};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_div(const T& rhs) const noexcept
     {
         std::make_unsigned_t<T> gcd {std::gcd<std::make_unsigned_t<T>, std::make_unsigned_t<T>>(
@@ -1334,7 +1334,7 @@ namespace sss
         }
         return fraction{static_cast<T>(this->numer/static_cast<T>(gcd)), denom.value()};
     }
-    template<typename T>
+    template<typename T> requires nonbool_integral<T>
     constexpr std::optional<fraction<T>> fraction<T>::checked_ldiv(const T& lhs) const noexcept
     {
         std::make_unsigned_t<T> gcd {std::gcd<std::make_unsigned_t<T>, std::make_unsigned_t<T>>(
